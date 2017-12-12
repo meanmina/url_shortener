@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  </head>
+  <body>
+    <script>
+      function shortenUrl() {
+        var url = document.getElementById("myUrl").value;
+
+        var xhr = new XMLHttpRequest();
+        var params = JSON.stringify({"url": url});
+
+        xhr.open('POST', "http://localhost:5000/shorten_url", true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.send(params);
+
+        xhr.onreadystatechange = function (data) {
+          if (xhr.readyState === 4 && xhr.status === 201) {
+            var url = JSON.parse(xhr.responseText)["shortened_url"];
+            var short_url_link = "<a href='" + url + "''>" + url + "</a>";
+            document.getElementById("myShortUrl").innerHTML = short_url_link;
+          }
+          else if (xhr.readyState === 4 && xhr.status === 400) {
+            alert(xhr.responseText);
+          }
+          else if (xhr.readyState === 4 && xhr.status === 0) {
+            alert("Bad connection.");
+          }
+        };
+      }
+    </script>
+    <div class="jumbotron">
+      <div class="container">
+        <br />
+        <div class="row">
+          <div class="col-md-offset-5 col-md-3">
+            <h4>Enter URL to shorten.</h4>
+            <input type="text" id="myUrl" name="url" class="form-control input-lg chat-input" placeholder="URL" />
+            <button type="submit" onclick="shortenUrl()" class="btn btn-lg btn-info">Submit</button>
+          </div>
+        </div>
+        <div id="myShortUrl">
+        </div>
+      </div>
+   </div>
+  </body>
+</html>
